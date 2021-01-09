@@ -9,15 +9,25 @@ class TestDeck(unittest.TestCase):
     """
     Test cases to test functionality of the cards.deck.Deck() class.
     """
+    def test_count_cards(self):
+        """
+        Test the `countCards()` function.
+        """
+        deck = Deck()
+        self.assertEqual(deck.countCards(), 52)
+        for _ in range(10):
+            _ = deck.dealOneCard()
+        self.assertEqual(deck.countCards(), 42)
+
     def test_deck_build(self):
         """
         Test that a deck of cards is initialized with 52 cards, in order.
         """
         deck = Deck()
-        self.assertEqual(len(deck.cards), 52)
+        self.assertEqual(deck.countCards(), 52)
         
-        ace_of_hearts = deck.cards[0]
-        king_of_diamonds = deck.cards[-1]
+        ace_of_hearts = deck._cards[0]
+        king_of_diamonds = deck._cards[-1]
         self.assertEqual(ace_of_hearts.rank.value, Rank.ACE.value)
         self.assertEqual(ace_of_hearts.suit.value, Suit.HEARTS.value)
         self.assertEqual(king_of_diamonds.rank.value, Rank.KING.value)
@@ -29,10 +39,10 @@ class TestDeck(unittest.TestCase):
         """
         deck = Deck()
         dealt_card = deck.dealOneCard()
-        self.assertEqual(type(dealt_card), Card)
+        self.assertTrue(isinstance(dealt_card, Card))
         self.assertEqual(dealt_card.rank.value, Rank.KING.value)
         self.assertEqual(dealt_card.suit.value, Suit.DIAMONDS.value)
-        self.assertEqual(len(deck.cards), 51)
+        self.assertEqual(deck.countCards(), 51)
 
     def test_deal_all_cards_one_by_one(self):
         """
@@ -43,8 +53,8 @@ class TestDeck(unittest.TestCase):
         for _ in range(num_cards):
             dealt_card = deck.dealOneCard()
             num_cards -= 1
-            self.assertEqual(type(dealt_card), Card)
-            self.assertEqual(len(deck.cards), num_cards)
+            self.assertTrue(isinstance(dealt_card, Card))
+            self.assertEqual(deck.countCards(), num_cards)
         self.assertEqual(num_cards, 0)
 
     def test_deal_one_card_empty_deck(self):
@@ -54,7 +64,7 @@ class TestDeck(unittest.TestCase):
         deck = Deck()
         for _ in range(52):
             _ = deck.dealOneCard()
-        self.assertEqual(len(deck.cards), 0)
+        self.assertEqual(deck.countCards(), 0)
         self.assertRaises(IndexError, deck.dealOneCard)
 
     def test_deal_n_cards(self):
@@ -64,10 +74,10 @@ class TestDeck(unittest.TestCase):
         deck = Deck()
         num_cards = 12
         dealt_cards = deck.dealNCards(num_cards)
-        self.assertEqual(type(dealt_cards), list)
-        self.assertEqual(type(dealt_cards[0]), Card)
+        self.assertTrue(isinstance(dealt_cards, list))
+        self.assertTrue(isinstance(dealt_cards[0], Card))
         self.assertEqual(len(dealt_cards), num_cards)
-        self.assertEqual(len(deck.cards), 52 - num_cards)
+        self.assertEqual(deck.countCards(), 52 - num_cards)
 
     def test_deal_all_cards_at_once(self):
         """
@@ -76,10 +86,10 @@ class TestDeck(unittest.TestCase):
         deck = Deck()
         num_cards = 52
         dealt_cards = deck.dealNCards(num_cards)
-        self.assertEqual(type(dealt_cards), list)
-        self.assertEqual(type(dealt_cards[0]), Card)
+        self.assertTrue(isinstance(dealt_cards, list))
+        self.assertTrue(isinstance(dealt_cards[0], Card))
         self.assertEqual(len(dealt_cards), 52)
-        self.assertEqual(len(deck.cards), 0)
+        self.assertEqual(deck.countCards(), 0)
 
     def test_deal_n_cards_too_few(self):
         """
@@ -107,12 +117,12 @@ class TestDeck(unittest.TestCase):
         """
         deck = Deck()
         dealt_card = deck.dealRandomCard()
-        self.assertEqual(type(dealt_card), Card)
-        self.assertEqual(len(deck.cards), 51)
+        self.assertTrue(isinstance(dealt_card, Card))
+        self.assertEqual(deck.countCards(), 51)
 
         dealt_rank = dealt_card.rank.value
         dealt_suit = dealt_card.suit.value
-        for c in deck.cards:
+        for c in deck._cards:
             self.assertFalse(dealt_rank == c.rank.value and dealt_suit == c.suit.value)
 
     def test_deal_52_random(self):
@@ -124,7 +134,7 @@ class TestDeck(unittest.TestCase):
         for _ in range(52):
             dealt_cards.append(deck.dealRandomCard())
         self.assertEqual(len(dealt_cards), 52)
-        self.assertEqual(len(deck.cards), 0)
+        self.assertEqual(deck.countCards(), 0)
         self.assertEqual(len(set(dealt_cards)), 52)
 
     def test_deal_random_card_empty(self):
@@ -133,7 +143,7 @@ class TestDeck(unittest.TestCase):
         """
         deck = Deck()
         _ = deck.dealNCards(52)
-        self.assertEqual(len(deck.cards), 0)
+        self.assertEqual(deck.countCards(), 0)
         self.assertRaises(IndexError, deck.dealRandomCard)
 
     def test_shuffle_52_cards(self):
@@ -141,10 +151,10 @@ class TestDeck(unittest.TestCase):
         Test that shuffle() on a 52-card deck will maintain 52 Card objects.
         """
         deck = Deck()
-        self.assertEqual(len(deck.cards), 52)
+        self.assertEqual(deck.countCards(), 52)
         deck.shuffle()
-        self.assertEqual(len(deck.cards), 52)
-        for c in deck.cards:
+        self.assertEqual(deck.countCards(), 52)
+        for c in deck._cards:
             self.assertTrue(isinstance(c, Card))
 
     def test_shuffle_does_not_change_cards(self):
@@ -156,7 +166,7 @@ class TestDeck(unittest.TestCase):
         deck = Deck()
         deck.shuffle()
         deck_card_name_list = []
-        for c in deck.cards:
+        for c in deck._cards:
             deck_card_name_list.append(c.name)
         self.assertSetEqual(set(DEFAULT_DECK), set(deck_card_name_list))
         
@@ -168,10 +178,10 @@ class TestDeck(unittest.TestCase):
         deck = Deck()
         num_dealt = 27
         _ = deck.dealNCards(num_dealt)
-        self.assertEqual(len(deck.cards), 52 - num_dealt)
+        self.assertEqual(deck.countCards(), 52 - num_dealt)
         deck.shuffle()
-        self.assertEqual(len(deck.cards), 52 - num_dealt)
-        for c in deck.cards:
+        self.assertEqual(deck.countCards(), 52 - num_dealt)
+        for c in deck._cards:
             self.assertTrue(isinstance(c, Card))
 
     def test_shuffle_0_cards(self):
@@ -180,7 +190,7 @@ class TestDeck(unittest.TestCase):
         """
         deck = Deck()
         _ = deck.dealNCards(52)
-        self.assertEqual(len(deck.cards), 0)
+        self.assertEqual(deck.countCards(), 0)
         try:
             deck.shuffle()
         except Exception:
@@ -193,7 +203,7 @@ class TestDeck(unittest.TestCase):
         deck = Deck()
         _ = deck.dealOneCard()
         deck.reset()
-        self.assertEqual(len(deck.cards), 52)
+        self.assertEqual(deck.countCards(), 52)
 
     def test_shuffle_with_reset(self):
         """
@@ -203,7 +213,7 @@ class TestDeck(unittest.TestCase):
         deck = Deck()
         _ = deck.dealOneCard()
         deck.shuffle(reset=True)
-        self.assertEqual(len(deck.cards), 52)
+        self.assertEqual(deck.countCards(), 52)
 
 
 if __name__ == '__main__':

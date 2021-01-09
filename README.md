@@ -54,7 +54,7 @@ ACE of HEARTS
 ```
 
 ### Deck
-The `Deck` class, in `deck.py`, is an object that represents an entire 52-card deck of `Card` objects. It has one attribute, `cards`, which is an array that will contain 0 to 52 distinct playing cards of type `Card`.
+The `Deck` class, in `deck.py`, is an object that represents an entire 52-card deck of `Card` objects. 
 
 The basic operations are outline below:
 * `shuffle(reset)`: shuffles the deck of cards in-place using the Fisher-Yates shuffle algorithm. If the `reset` argument is set to `True`, then the deck is reset to the original 52 cards before it's shuffled (in case cards had been previously dealt). Otherwise, only the remaining cards in the deck are shuffled.
@@ -63,7 +63,7 @@ The basic operations are outline below:
 Additionally, I added the following extra functions:
 * `dealNCards(n)`: returns a list of the top `n` cards in the deck's list of cards. If less than `n` cards remain in the deck, then no cards are dealt and an `IndexError` exception is raised.
 * `dealRandomCard()`: returns a random card from the deck's list of cards. If the deck is empty, then no card is dealt and an `IndexError` exception is raised. This works just like `dealOneCard()`, but the only difference is that a random card from the deck is returned, rather than the top card.
-* `reset()`: resets the `cards` list to an unaltered, default, sorted 52-cards.
+* `reset()`: resets the deck to an unaltered, default, sorted 52-cards.
 * `print()`: prints the `name` of every card in the deck's list of card to stdout.
 
 ### Example:
@@ -102,8 +102,9 @@ Note that calling `dealOneCard()` 52 times will return the cards in top to botto
 ```
 IndexError: Cannot deal from empty deck. Please reset or reshuffle the deck first.
 ```
+Note that the above is also the case for `dealRandomCard()` if the deck is empty, or `dealNCards(n)` if there are fewer than `n` remaining cards in the deck.  
 
-To shuffle, simple call `shuffle()` on the deck:
+To shuffle the deck, simply call `shuffle()` on the deck:
 ```python
 deck = Deck()
 deck.print()
@@ -128,6 +129,8 @@ ACE of SPADES
 KING of CLUBS
 FOUR of DIAMONDS
 ```
+
+Shuffling while resetting by calling `shuffle(reset=True)` will reset the deck to the original 52 cards before shuffling. And finally, to simply reset the deck to the original _ordered_ 52 cards, just call `reset()`.
 
 ## Testing
 

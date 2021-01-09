@@ -7,11 +7,6 @@ from .suit import Suit
 class Deck:
     """
     A class to represent a deck of 52 poker-style playing cards.
-
-    Attributes
-    ----------
-    cards : List[Card]
-        An array of no more than 52 unique playing cards.
     """
     def __init__(self, seed=42):
         """
@@ -42,14 +37,14 @@ class Deck:
             self.reset()
 
         # grab the number of existing cards
-        n = len(self.cards)
+        n = self.countCards()
 
         # only reshuffle if there are two or more cards in the deck
         if n > 1:
             for i in range(n-1, 0, -1):
                 j = random.randint(0, i)
                 if i != j:
-                    self.cards[i], self.cards[j] = self.cards[j], self.cards[i]
+                    self._cards[i], self._cards[j] = self._cards[j], self._cards[i]
 
     def dealOneCard(self):
         """
@@ -65,10 +60,10 @@ class Deck:
         IndexError
             When the deck is empty.
         """
-        if len(self.cards) == 0:
+        if self.countCards() == 0:
             raise IndexError("Cannot deal from empty deck. Please reset or "
                 "reshuffle the deck first.")
-        return self.cards.pop()
+        return self._cards.pop()
 
     def dealNCards(self, n):
         """
@@ -89,10 +84,10 @@ class Deck:
         IndexError
             When there are fewer than n cards remaining in the deck.
         """
-        if len(self.cards) < n:
-            raise IndexError(f"Less than {n} cards are left to deal. Please \
-                reshuffle the deck first by calling shuffle().")
-        return [self.cards.pop() for _ in range(n)]
+        if self.countCards() < n:
+            raise IndexError(f"Less than {n} cards are left to deal. Please "
+                "reshuffle the deck first by calling shuffle().")
+        return [self._cards.pop() for _ in range(n)]
 
     def dealRandomCard(self):
         """
@@ -109,26 +104,40 @@ class Deck:
             When the deck is empty.
 
         """
-        num_cards = len(self.cards)
+        num_cards = self.countCards()
         if num_cards == 0:
-            raise IndexError("Cannot deal from empty deck. Please reshuffle \
-                the deck first by calling shuffle().")
+            raise IndexError("Cannot deal from empty deck. Please reshuffle "
+                "the deck first by calling shuffle().")
         idx = random.randint(0, num_cards - 1)
-        return self.cards.pop(idx)
+        return self._cards.pop(idx)
 
     def reset(self):
         """
         Creates a fresh, sorted 52-card deck.
         """
-        self.cards = []
+        # note the leading single underscore _ convention to indicate that this
+        # is a private variable of the class and is not to be accessed like the
+        # rest of the class's API.
+        self._cards = []
         for suit in Suit:
             for rank in Rank:
                 card = Card(suit, rank)
-                self.cards.append(card)
+                self._cards.append(card)
+
+    def countCards(self):
+        """
+        Gets the current number of cards in the deck.
+        
+        Returns
+        ----------
+        int
+            The number of cards in the deck.
+        """
+        return len(self._cards)
 
     def print(self):
         """
         Prints the deck of the cards to stdout.
         """
-        for c in self.cards:
+        for c in self._cards:
             print(c.name)
