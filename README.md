@@ -20,14 +20,17 @@ To activate the environment:
 conda activate pyenv
 ```
 
-## Design
-
-TODO
-
 ## Usage
 
 TODO
 
 ## Testing
+
+Python's built-in `unittest` module is used to test code functionality. To run the unit tests, execute the following:
+```bash
+python -m unittest discover tests -v
+```
+
+## Design
 
 TODO
