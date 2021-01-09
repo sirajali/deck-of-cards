@@ -90,7 +90,7 @@ To deal one card:
 deck = Deck()
 dealt = deck.dealOneCard()
 print(f'Dealt: {dealt.name}')
-print(f'Remaining cards: {len(deck.cards)}')
+print(f'Remaining cards: {deck.countCards()}')
 ```
 The result:
 ```
