@@ -4,7 +4,7 @@ from cards.card import Card
 from cards.rank import Rank
 from cards.suit import Suit
 
-class TestDeck(unittest.TestCase):
+class TestCard(unittest.TestCase):
     """
     Test cases to test functionality of the cards.card.Card() class.
     """

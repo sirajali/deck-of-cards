@@ -158,6 +158,9 @@ class TestDeck(unittest.TestCase):
             self.assertTrue(isinstance(c, Card))
 
     def test_shuffle_does_not_change_cards(self):
+        """
+        Test that shuffle() does not add or remove any cards from the deck.
+        """
         DEFAULT_DECK = []
         for suit in Suit:
             for rank in Rank:
